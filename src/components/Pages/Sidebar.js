@@ -1,0 +1,138 @@
+import React, { useState } from "react";
+import {
+    Home,
+    FileText,
+    Settings,
+    Shield,
+    LogOut,
+    Search,
+    User,
+    ChevronDown,
+    ChevronUp,
+} from "lucide-react";
+import { useLocation } from "react-router-dom";
+import "./Sidebar.css";
+
+const Sidebar = () => {
+    const location = useLocation();
+    const [isMainOpen, setIsMainOpen] = useState(true);
+    const [isPrivacyOpen, setIsPrivacyOpen] = useState(true);
+    const [searchTerm, setSearchTerm] = useState("");
+
+    const mainLinks = [
+        { path: "/dashboard", label: "Home", Icon: Home, notifications: 0 },
+        { path: "/invoices", label: "Invoices", Icon: FileText, notifications: 3 },
+        { path: "/settings", label: "Settings", Icon: Settings, notifications: 0 },
+    ];
+
+    const privacyLinks = [
+        { path: "/privacy-policy", label: "Privacy Policy", Icon: Shield },
+        { path: "/data-security", label: "Data Security", Icon: Shield },
+        { path: "/terms-of-service", label: "Terms of Service", Icon: Shield },
+    ];
+
+    const filterLinks = (links) =>
+        links.filter((link) =>
+            link.label.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+
+    return (
+        <aside className="sidebar">
+            {/* Profile Section */}
+            <div className="sidebar-header">
+                <div className="profile-container">
+                    <User className="profile-icon" />
+                    <span className="profile-name">John Doe</span>
+                </div>
+            </div>
+
+            {/* Search Bar */}
+            <div className="sidebar-search">
+                <Search className="search-icon" />
+                <input
+                    type="text"
+                    placeholder="Search..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+            </div>
+
+            {/* Main Section */}
+            <nav className="sidebar-nav">
+                <div className="section-header">
+                    <h3 className="sidebar-section-title">Main</h3>
+                    <button
+                        className="toggle-button"
+                        onClick={() => setIsMainOpen(!isMainOpen)}
+                        aria-label="Toggle Main Section"
+                    >
+                        {isMainOpen ? <ChevronUp /> : <ChevronDown />}
+                    </button>
+                </div>
+                {isMainOpen && (
+                    <ul>
+                        {filterLinks(mainLinks).map(({ path, label, Icon, notifications }) => (
+                            <li key={path}>
+                                <a
+                                    href={path}
+                                    className={`sidebar-link ${
+                                        location.pathname === path ? "active" : ""
+                                    }`}
+                                >
+                                    <Icon className="sidebar-icon" />
+                                    <span>{label}</span>
+                                    {notifications > 0 && (
+                                        <span className="notification-badge">
+                                            {notifications}
+                                        </span>
+                                    )}
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </nav>
+
+            {/* Privacy Section */}
+            <nav className="sidebar-nav">
+                <div className="section-header">
+                    <h3 className="sidebar-section-title">Privacy & Support</h3>
+                    <button
+                        className="toggle-button"
+                        onClick={() => setIsPrivacyOpen(!isPrivacyOpen)}
+                        aria-label="Toggle Privacy Section"
+                    >
+                        {isPrivacyOpen ? <ChevronUp /> : <ChevronDown />}
+                    </button>
+                </div>
+                {isPrivacyOpen && (
+                    <ul>
+                        {filterLinks(privacyLinks).map(({ path, label, Icon }) => (
+                            <li key={path}>
+                                <a
+                                    href={path}
+                                    className={`sidebar-link ${
+                                        location.pathname === path ? "active" : ""
+                                    }`}
+                                >
+                                    <Icon className="sidebar-icon" />
+                                    <span>{label}</span>
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </nav>
+
+            {/* Footer */}
+            <div className="sidebar-footer">
+                <a href="/logout" className="sidebar-link">
+                    <LogOut className="sidebar-icon" />
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+    );
+};
+
+export default Sidebar;

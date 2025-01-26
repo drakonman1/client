@@ -37,6 +37,20 @@
     outline: none;
 }
 
+/* Error Styling */
+.invoice-form input.error,
+.invoice-form select.error {
+    border-color: #dc3545;
+    box-shadow: 0 0 6px rgba(220, 53, 69, 0.3);
+}
+
+.invoice-form .error-message {
+    color: #dc3545;
+    font-size: 0.9rem;
+    margin-top: -8px;
+    margin-bottom: 10px;
+}
+
 /* Items Section */
 .invoice-form .items-section {
     margin-top: 20px;
@@ -155,6 +169,12 @@
 .invoice-form .file-upload:hover {
     background-color: #eef5ff;
     border-color: #0056b3;
+}
+
+.invoice-form .file-upload.success {
+    border-color: #28a745;
+    background-color: #e8f8f0;
+    color: #218838;
 }
 
 /* Toggle Form Button */
