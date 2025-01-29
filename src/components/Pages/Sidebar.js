@@ -9,6 +9,10 @@ import {
     User,
     ChevronDown,
     ChevronUp,
+    Bell,
+    Star,
+    Moon,
+    Sun,
 } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import "./Sidebar.css";
@@ -17,7 +21,9 @@ const Sidebar = () => {
     const location = useLocation();
     const [isMainOpen, setIsMainOpen] = useState(true);
     const [isPrivacyOpen, setIsPrivacyOpen] = useState(true);
+    const [isRecentOpen, setIsRecentOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
+    const [darkMode, setDarkMode] = useState(false);
 
     const mainLinks = [
         { path: "/dashboard", label: "Home", Icon: Home, notifications: 0 },
@@ -31,13 +37,18 @@ const Sidebar = () => {
         { path: "/terms-of-service", label: "Terms of Service", Icon: Shield },
     ];
 
+    const recentLinks = [
+        { path: "/recent-page-1", label: "Recent Page 1", Icon: FileText },
+        { path: "/recent-page-2", label: "Recent Page 2", Icon: FileText },
+    ];
+
     const filterLinks = (links) =>
         links.filter((link) =>
             link.label.toLowerCase().includes(searchTerm.toLowerCase())
         );
 
     return (
-        <aside className="sidebar">
+        <aside className={`sidebar ${darkMode ? "dark-mode" : ""}`}>
             {/* Profile Section */}
             <div className="sidebar-header">
                 <div className="profile-container">
@@ -124,8 +135,47 @@ const Sidebar = () => {
                 )}
             </nav>
 
+            {/* Recent Activity Section */}
+            <nav className="sidebar-nav">
+                <div className="section-header">
+                    <h3 className="sidebar-section-title">Recent Activity</h3>
+                    <button
+                        className="toggle-button"
+                        onClick={() => setIsRecentOpen(!isRecentOpen)}
+                        aria-label="Toggle Recent Activity Section"
+                    >
+                        {isRecentOpen ? <ChevronUp /> : <ChevronDown />}
+                    </button>
+                </div>
+                {isRecentOpen && (
+                    <ul>
+                        {recentLinks.map(({ path, label, Icon }) => (
+                            <li key={path}>
+                                <a
+                                    href={path}
+                                    className={`sidebar-link ${
+                                        location.pathname === path ? "active" : ""
+                                    }`}
+                                >
+                                    <Icon className="sidebar-icon" />
+                                    <span>{label}</span>
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </nav>
+
             {/* Footer */}
             <div className="sidebar-footer">
+                <button
+                    className="toggle-theme"
+                    onClick={() => setDarkMode(!darkMode)}
+                    aria-label="Toggle Theme"
+                >
+                    {darkMode ? <Sun className="theme-icon" /> : <Moon className="theme-icon" />}
+                    <span>{darkMode ? "Light Mode" : "Dark Mode"}</span>
+                </button>
                 <a href="/logout" className="sidebar-link">
                     <LogOut className="sidebar-icon" />
                     <span>Logout</span>

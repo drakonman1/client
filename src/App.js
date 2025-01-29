@@ -5,6 +5,7 @@ import Register from "./components/AutherisationFunctions/Register"; // Register
 import Dashboard from "./components/Pages/dashboard"; // Example dashboard page
 import InvoiceHub from "./components/Pages/InvoiceManagement/Invoicehub";
 import ClientManagement from "./components/Pages/ClientManagement";
+import Settings from "./components/Pages/SettingsManagement/Settings";
 const App = () => {
     return (
         <Router>
@@ -15,6 +16,7 @@ const App = () => {
                 {/* Add a default route */}
                 <Route path="/invoices" element={<InvoiceHub />} />
                 <Route path="/clients" element={<ClientManagement />} />
+                <Route path="/settings" element={<Settings />} />
                 <Route path="*" element={<h1>404 - Page Not Found</h1>} />
             </Routes>
         </Router>

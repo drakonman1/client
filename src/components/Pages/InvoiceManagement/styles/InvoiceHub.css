@@ -171,8 +171,10 @@ table tr:hover {
     font-weight: bold;
     color: #1f2937;
 }
+/* ============================= */
+/* MODAL STYLING (Fixed for PC & Mobile) */
+/* ============================= */
 
-/* Modal */
 .modal {
     position: fixed;
     top: 0;
@@ -180,20 +182,80 @@ table tr:hover {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.6);
-    display: flex;
+    display: flex; /* Center modal properly */
     justify-content: center;
     align-items: center;
     z-index: 1000;
 }
 
+/* ============================= */
+/* Modal Content (PC Full View, Mobile Scroll) */
+/* ============================= */
+
 .modal .bg-white {
+    background-color: #ffffff;
     padding: 2rem;
     border-radius: 12px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     width: 90%;
-    max-width: 600px;
+    max-width: 1000px;
+    max-height: 100vh; /* Ensures modal doesn’t exceed screen height */
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeIn 0.3s ease-in-out;
 }
+
+/* ============================= */
+/* SCROLLABLE FORM ON MOBILE */
+/* ============================= */
+
+.modal .modal-content {
+    width: 100%;
+    flex: 1; /* Allows content to take up remaining space */
+    overflow-y: auto; /* Enables vertical scrolling */
+    padding: 1rem;
+}
+
+/* On small screens, enforce vertical scrolling inside the modal */
+@media (max-width: 768px) {
+    .modal .bg-white {
+        max-height: 85vh; /* Prevents modal from being too tall */
+        overflow: hidden; /* Stops full-screen overflow */
+        display: flex;
+        flex-direction: column;
+    }
+
+    .modal .modal-content {
+        max-height: 70vh; /* Restrict height for scrolling */
+        overflow-y: auto; /* Vertical scrolling enabled */
+    }
+}
+
+/* ============================= */
+/* Close Button */
+/* ============================= */
+
+.modal .close-button {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    color: #374151;
+    transition: color 0.3s ease;
+}
+
+.modal .close-button:hover {
+    color: #ef4444;
+}
+
+/* ============================= */
+/* Action Buttons */
+/* ============================= */
 
 .modal button {
     background-color: #ef4444;
@@ -201,10 +263,11 @@ table tr:hover {
     padding: 0.75rem 1.5rem;
     border: none;
     border-radius: 8px;
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.3s ease;
+    margin-top: 1rem;
 }
 
 .modal button:hover {
@@ -212,6 +275,37 @@ table tr:hover {
     transform: scale(1.05);
 }
 
+/* ============================= */
+/* Animation for Smooth Modal Entry */
+/* ============================= */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================= */
+/* Responsive Fixes for Small Screens */
+/* ============================= */
+
+@media (max-width: 600px) {
+    .modal .bg-white {
+        width: 95%;
+        padding: 1.5rem;
+    }
+
+    .modal button {
+        width: 100%;
+    }
+}
+
+
+/*///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /* Responsive Design */
 @media (max-width: 1024px) {
     .sidebar {

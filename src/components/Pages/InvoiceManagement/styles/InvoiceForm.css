@@ -1,209 +1,318 @@
-/* General Invoice Form Container */
+/* ========================= */
+/* GENERAL INVOICE FORM STYLING */
+/* ========================= */
+
 .invoice-form {
+    display: flex; /* Fix: Ensures proper alignment */
+    flex-direction: column;
+    width: 100%;
     background-color: #ffffff;
     padding: 20px;
     border-radius: 8px;
     margin-bottom: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    font-family: "Arial", sans-serif;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Inter', sans-serif;
+    max-width: 900px;
+    margin: auto;
 }
 
-/* Form Heading */
+/* Scrollable on Mobile, Full Height on PC */
+@media (max-width: 768px) {
+    .invoice-form {
+        max-height: 80vh; /* Prevents modal overflow */
+        overflow-y: auto; /* Enables vertical scrolling */
+    }
+}
+
+/* ========================= */
+/* FORM HEADER */
+/* ========================= */
 .invoice-form h3 {
-    margin-bottom: 20px;
-    font-size: 1.8rem;
-    font-weight: 600;
-    color: #333;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #1f2937;
     text-align: center;
+    margin-bottom: 15px;
 }
 
-/* Input Fields */
+/* ========================= */
+/* INPUT FIELDS & SELECT BOXES */
+/* ========================= */
+
 .invoice-form input,
-.invoice-form select {
+.invoice-form select,
+.invoice-form textarea {
     width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    padding: 8px;
+    margin: 6px 0;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
     font-size: 1rem;
     box-sizing: border-box;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background-color: #f9fafb;
 }
 
 .invoice-form input:focus,
-.invoice-form select:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 6px rgba(0, 123, 255, 0.3);
+.invoice-form select:focus,
+.invoice-form textarea:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 6px rgba(59, 130, 246, 0.3);
     outline: none;
 }
 
-/* Error Styling */
+/* ========================= */
+/* ERROR STYLING */
+/* ========================= */
 .invoice-form input.error,
-.invoice-form select.error {
-    border-color: #dc3545;
-    box-shadow: 0 0 6px rgba(220, 53, 69, 0.3);
+.invoice-form select.error,
+.invoice-form textarea.error {
+    border-color: #ef4444;
+    box-shadow: 0 0 6px rgba(239, 68, 68, 0.3);
 }
 
 .invoice-form .error-message {
-    color: #dc3545;
+    color: #ef4444;
     font-size: 0.9rem;
-    margin-top: -8px;
-    margin-bottom: 10px;
+    margin-top: -5px;
+    margin-bottom: 8px;
 }
 
-/* Items Section */
-.invoice-form .items-section {
-    margin-top: 20px;
-}
+/* ========================= */
+/* INVOICE ITEMS SECTION */
+/* ========================= */
 
 .invoice-form .items-section h4 {
-    font-size: 1.4rem;
-    color: #555;
-    margin-bottom: 10px;
+    font-size: 1.2rem;
+    color: #374151;
+    margin-bottom: 8px;
 }
 
-/* Individual Item Row */
+/* Invoice Item Row (Fix Button Alignment) */
 .invoice-form .invoice-item {
     display: flex;
-    gap: 10px;
     align-items: center;
-    margin-bottom: 10px;
+    gap: 8px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
 }
 
 .invoice-form .invoice-item input {
     flex: 1;
-    padding: 10px;
+    padding: 8px;
 }
 
-.invoice-form .remove-item-button {
-    background-color: #dc3545;
-    color: white;
+/* Buttons Inline */
+.invoice-form .invoice-item button {
     border: none;
     border-radius: 4px;
-    padding: 10px 12px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.invoice-form .remove-item-button:hover {
-    background-color: #c82333;
-}
-
-/* Add Item Button */
-.invoice-form .add-item-button {
-    margin-top: 10px;
-    display: inline-block;
-    background-color: #28a745;
-    color: white;
-    padding: 10px 16px;
-    border: none;
-    border-radius: 4px;
+    padding: 6px 8px;
     font-size: 1rem;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: transform 0.2s ease;
+}
+
+/* Add Button (➕) */
+.invoice-form .add-item-button {
+    background-color: #10b981;
+    color: white;
 }
 
 .invoice-form .add-item-button:hover {
-    background-color: #218838;
+    background-color: #059669;
+    transform: scale(1.05);
 }
 
-/* Total Section */
-.invoice-form .total-section {
-    margin-top: 20px;
-    font-size: 1.2rem;
+/* Remove Button (❌) */
+.invoice-form .remove-item-button {
+    background-color: #ef4444;
+    color: white;
+}
+
+.invoice-form .remove-item-button:hover {
+    background-color: #dc2626;
+    transform: scale(1.05);
+}
+
+/* Duplicate Button (🔁) */
+.invoice-form .duplicate-item-button {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.invoice-form .duplicate-item-button:hover {
+    background-color: #2563eb;
+    transform: scale(1.05);
+}
+
+/* ========================= */
+/* TOTALS SECTION */
+/* ========================= */
+
+.invoice-form .totals-section {
+    margin-top: 12px;
+    font-size: 1rem;
     font-weight: 600;
     text-align: right;
-    color: #333;
+    color: #1f2937;
 }
 
-/* Form Buttons */
+.invoice-form .totals-section p {
+    margin: 3px 0;
+}
+
+/* ========================= */
+/* FORM BUTTONS (FIXED SIZING) */
+/* ========================= */
+
 .invoice-form .form-actions {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     gap: 10px;
-    margin-top: 20px;
+    margin-top: 12px;
 }
 
-.invoice-form button {
-    padding: 10px 16px;
+.invoice-form .form-actions button {
+    flex: 1;
+    padding: 10px;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     font-size: 1rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
-.invoice-form button.save-button {
-    background-color: #007bff;
+/* Save & Generate PDF Buttons */
+.invoice-form .save-button {
+    background-color: #3b82f6;
     color: white;
 }
 
-.invoice-form button.save-button:hover {
-    background-color: #0056b3;
+.invoice-form .save-button:hover {
+    background-color: #2563eb;
 }
 
-.invoice-form button.cancel-button {
-    background-color: #6c757d;
+.invoice-form .generate-pdf-button {
+    background-color: #10b981;
     color: white;
 }
 
-.invoice-form button.cancel-button:hover {
-    background-color: #5a6268;
+.invoice-form .generate-pdf-button:hover {
+    background-color: #059669;
 }
 
-/* File Upload Section */
+/* Cancel Button */
+.invoice-form .cancel-button {
+    background-color: #6b7280;
+    color: white;
+}
+
+.invoice-form .cancel-button:hover {
+    background-color: #4b5563;
+}
+
+/* ========================= */
+/* FILE UPLOAD STYLING */
+/* ========================= */
+
 .invoice-form .file-upload {
-    margin-top: 15px;
-    border: 2px dashed #007bff;
-    padding: 15px;
+    margin-top: 8px;
+    padding: 8px;
     text-align: center;
-    background-color: #f7faff;
-    color: #555;
-    font-size: 1rem;
+    background-color: #eef2ff;
+    font-size: 0.9rem;
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .invoice-form .file-upload:hover {
-    background-color: #eef5ff;
-    border-color: #0056b3;
+    background-color: #dbeafe;
+    border-color: #2563eb;
 }
 
-.invoice-form .file-upload.success {
-    border-color: #28a745;
-    background-color: #e8f8f0;
-    color: #218838;
+/* ========================= */
+/* TEMPLATE MANAGEMENT */
+/* ========================= */
+
+.invoice-form .template-section {
+    margin-top: 15px;
 }
 
-/* Toggle Form Button */
-.toggle-form-button {
-    background-color: #007bff;
+.invoice-form .template-section h4 {
+    font-size: 1rem;
+    margin-bottom: 8px;
+    color: #374151;
+}
+
+.invoice-form .template-section button {
+    background-color: #f59e0b;
     color: white;
-    padding: 10px 16px;
+    padding: 8px 12px;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     font-size: 1rem;
     cursor: pointer;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    margin: 10px 0 20px;
+    transition: background-color 0.3s ease;
 }
 
-.toggle-form-button:hover {
-    background-color: #0056b3;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.invoice-form .template-section button:hover {
+    background-color: #d97706;
 }
 
-/* Responsive Design */
+/* ========================= */
+/* DRAG & DROP UPLOAD */
+/* ========================= */
+
+.invoice-form .file-drop-zone {
+    border: 2px dashed #6b7280;
+    padding: 10px;
+    text-align: center;
+    background-color: #f9fafb;
+    color: #374151;
+    border-radius: 6px;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.invoice-form .file-drop-zone:hover {
+    background-color: #e5e7eb;
+    border-color: #4b5563;
+}
+
+.invoice-form .file-drop-zone.drag-over {
+    background-color: #d1d5db;
+    border-color: #1f2937;
+}
+
+/* ========================= */
+/* RESPONSIVE DESIGN FIXES */
+/* ========================= */
+
 @media (max-width: 768px) {
+    .invoice-form {
+        padding: 15px;
+    }
+
     .invoice-form .invoice-item {
         flex-direction: column;
-        gap: 5px;
+        gap: 6px;
     }
 
     .invoice-form .form-actions {
         flex-direction: column;
-        align-items: stretch;
+    }
+}
+
+@media (max-width: 480px) {
+    .invoice-form h3 {
+        font-size: 1.2rem;
+    }
+
+    .invoice-form .totals-section {
+        font-size: 0.9rem;
+    }
+
+    .invoice-form .form-actions button {
+        font-size: 0.9rem;
     }
 }

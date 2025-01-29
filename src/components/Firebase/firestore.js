@@ -76,3 +76,9 @@ export const deleteDocument = async (userId, collectionName, id) => {
         throw error;
     }
 };
+
+export const updateInvoiceStatus = async (userId, invoiceId, paidAmount, total) => {
+    const status = paidAmount >= total ? "Paid" : paidAmount > 0 ? "Partially Paid" : "Unpaid";
+
+    await updateDocument(userId, "invoices", invoiceId, { paidAmount, status });
+};

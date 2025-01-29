@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect, useCallback } from "react";
+import React, { useReducer, useEffect, useCallback, useState } from "react";
 import {
     fetchCollection,
     addToCollection,
@@ -21,6 +21,7 @@ import {
     Pie,
     Cell,
 } from "recharts";
+import { toast } from 'react-toastify';
 
 const initialState = {
     invoices: [],
@@ -57,6 +58,8 @@ const reducer = (state, action) => {
             return { ...state, analytics: action.payload };
         case "UPDATE_FORM_STATE":
             return { ...state, formState: action.payload };
+        case "SET_RECENT_ACTIVITY":
+            return { ...state, recentActivity: action.payload };
         case "TOGGLE_FORM":
             return { ...state, showForm: !state.showForm };
         case "RESET_FORM":
@@ -84,6 +87,9 @@ const reducer = (state, action) => {
 
 const InvoiceHub = ({ userId }) => {
     const [state, dispatch] = useReducer(reducer, initialState);
+    const [formState, setFormStateInternal] = useState({
+        invoice: null  // Initialize as null to trigger the initialization in InvoiceForm
+    });
 
     const loadInvoices = useCallback(async () => {
         if (!userId) return;
@@ -93,7 +99,7 @@ const InvoiceHub = ({ userId }) => {
             dispatch({ type: "SET_INVOICES", payload: data });
         } catch (error) {
             console.error("Error fetching invoices:", error.message);
-            alert("Failed to fetch invoices.");
+            toast.error("Failed to fetch invoices.");
         } finally {
             dispatch({ type: "SET_LOADING", payload: false });
         }
@@ -128,25 +134,49 @@ const InvoiceHub = ({ userId }) => {
         dispatch({ type: "UPDATE_ANALYTICS", payload: analytics });
     }, [state.invoices, state.searchTerm, calculateAnalytics]);
 
+    // Wrap setFormState in useCallback
+    const setFormState = useCallback((newState) => {
+        setFormStateInternal(newState);
+    }, []); 
+
+    // Reset form state when closing form
+    const toggleForm = useCallback(() => {
+        if (state.showForm) {
+            // Reset form state when closing
+            setFormStateInternal({
+                invoice: null
+            });
+            dispatch({ type: "RESET_FORM" });
+        }
+        dispatch({ type: "TOGGLE_FORM" });
+    }, [state.showForm]);
+
+    // When editing an invoice, update form state
+    const handleEdit = useCallback((invoice) => {
+        setFormStateInternal({
+            invoice: { ...invoice },
+            isEditing: true
+        });
+        dispatch({ type: "TOGGLE_FORM" });
+    }, []);
+
     const handleAddOrUpdate = async () => {
-        const { invoiceNumber, client, dateIssued, dueDate, items } = state.formState.invoice;
+        const { invoiceNumber, dateIssued, dueDate, items } = formState.invoice;
     
-        if (!invoiceNumber || !client || !dateIssued || !dueDate || items.length === 0) {
-            alert("Please complete all fields.");
+        if (!invoiceNumber || !dateIssued || !dueDate || items.length === 0) {
+            alert("Please complete all required fields.");
             return;
         }
     
-        const total = items.reduce((sum, item) => sum + item.quantity * item.price, 0);
-        const newInvoice = { ...state.formState.invoice, total };
-        const timestamp = new Date().toLocaleString(); // Track when the action happened
+        const timestamp = new Date().toLocaleString();
     
         try {
-            if (state.formState.isEditing) {
-                await updateDocument(userId, "invoices", state.formState.invoice.id, newInvoice);
+            if (formState.isEditing) {
+                await updateDocument(userId, "invoices", formState.invoice.id, formState.invoice);
                 dispatch({
                     type: "SET_INVOICES",
                     payload: state.invoices.map((inv) =>
-                        inv.id === state.formState.invoice.id ? newInvoice : inv
+                        inv.id === formState.invoice.id ? formState.invoice : inv
                     ),
                 });
                 dispatch({
@@ -156,14 +186,14 @@ const InvoiceHub = ({ userId }) => {
                         {
                             type: "Updated",
                             invoiceNumber,
-                            client,
+                            client: formState.invoice.clientName || formState.invoice.supplierName,
                             timestamp,
                         },
                     ],
                 });
-                alert("Invoice updated successfully!");
+                toast.success("Invoice updated successfully!");
             } else {
-                await addToCollection(userId, "invoices", newInvoice);
+                await addToCollection(userId, "invoices", formState.invoice);
                 dispatch({
                     type: "SET_RECENT_ACTIVITY",
                     payload: [
@@ -171,25 +201,24 @@ const InvoiceHub = ({ userId }) => {
                         {
                             type: "Created",
                             invoiceNumber,
-                            client,
+                            client: formState.invoice.clientName || formState.invoice.supplierName,
                             timestamp,
                         },
                     ],
                 });
-                alert("Invoice added successfully!");
+                toast.success("Invoice added successfully!");
             }
-            dispatch({ type: "RESET_FORM" });
+            toggleForm();
             loadInvoices();
-            dispatch({ type: "TOGGLE_FORM" });
         } catch (error) {
-            console.error("Error saving invoice:", error.message);
-            alert("Failed to save invoice.");
+            console.error("Error saving invoice:", error);
+            toast.error("Failed to save invoice.");
         }
     };
 
     const handleDelete = async (id) => {
         const invoiceToDelete = state.invoices.find((inv) => inv.id === id);
-        const timestamp = new Date().toLocaleString(); // Track when the action happened
+        const timestamp = new Date().toLocaleString();
     
         if (!window.confirm("Are you sure you want to delete this invoice?")) return;
         try {
@@ -207,18 +236,11 @@ const InvoiceHub = ({ userId }) => {
                     },
                 ],
             });
-            alert("Invoice deleted successfully!");
+            toast.success("Invoice deleted successfully!");
         } catch (error) {
             console.error("Error deleting invoice:", error.message);
-            alert("Failed to delete invoice.");
+            toast.error("Failed to delete invoice.");
         }
-    };
-
-    const toggleForm = () => {
-        if (state.showForm) {
-            dispatch({ type: "RESET_FORM" });
-        }
-        dispatch({ type: "TOGGLE_FORM" });
     };
 
     return (
@@ -381,12 +403,7 @@ const InvoiceHub = ({ userId }) => {
                         <div className="table-container bg-white rounded shadow p-4">
                             <InvoiceTable
                                 invoices={state.filteredInvoices}
-                                onEdit={(invoice) =>
-                                    dispatch({
-                                        type: "UPDATE_FORM_STATE",
-                                        payload: { isEditing: true, invoice: { ...invoice } },
-                                    })
-                                }
+                                onEdit={handleEdit}
                                 onDelete={handleDelete}
                             />
                         </div>
@@ -397,10 +414,8 @@ const InvoiceHub = ({ userId }) => {
                     <div className="modal fixed inset-0 bg-gray-700 bg-opacity-50 flex justify-center items-center">
                         <div className="bg-white p-6 rounded shadow-lg w-full max-w-lg">
                             <InvoiceForm
-                                formState={state.formState}
-                                setFormState={(newState) =>
-                                    dispatch({ type: "UPDATE_FORM_STATE", payload: newState })
-                                }
+                                formState={formState}
+                                setFormState={setFormState}
                                 onSave={handleAddOrUpdate}
                             />
                             <button
@@ -417,3 +432,4 @@ const InvoiceHub = ({ userId }) => {
     );
 };
 export default InvoiceHub;
+
