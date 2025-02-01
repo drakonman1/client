@@ -1,0 +1,173 @@
+/* ======================= */
+/* 🔹 Account Settings Styles (Aligned with Business Settings) */
+/* ======================= */
+
+.account-settings-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+    width: 100%;
+    margin: 0 auto; /* Center content */
+    background: #fff; /* Matching business settings background */
+    border-radius: 10px;
+}
+
+/* Labels */
+.account-settings-container label {
+    font-weight: bold;
+    display: block;
+    font-size: 1rem;
+    color: #1f2937;
+    margin-bottom: 5px;
+}
+
+/* Inputs & Selects */
+.account-settings-container .text-input,
+.account-settings-container .password-input,
+.account-settings-container .select-input,
+.account-settings-container .textarea-input,
+.account-settings-container .checkbox-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #2c3e50;
+    border-radius: 6px;
+    font-size: 1rem;
+    background: white; /* Dark input background */
+    color: #1f2937;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Password Inputs */
+.account-settings-container .password-input {
+    font-family: "Arial", sans-serif;
+}
+
+/* Textarea Specific */
+.account-settings-container .textarea-input {
+    height: 100px;
+    resize: vertical;
+}
+
+/* Select Dropdown */
+.account-settings-container .select-input {
+    appearance: none;
+    background: #fff;
+    cursor: pointer;
+}
+
+/* Checkbox Styling */
+.account-settings-container .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1rem;
+    color: #1f2937;
+    margin-top: 10px;
+}
+
+.account-settings-container .checkbox-input {
+    width: auto;
+    margin: 0;
+    height: 18px;
+    width: 18px;
+}
+
+/* Hover Effects */
+.account-settings-container .text-input:hover,
+.account-settings-container .password-input:hover,
+.account-settings-container .textarea-input:hover,
+.account-settings-container .select-input:hover {
+    border-color: #007bff;
+}
+
+/* Focus Effects */
+.account-settings-container .text-input:focus,
+.account-settings-container .password-input:focus,
+.account-settings-container .textarea-input:focus,
+.account-settings-container .select-input:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 6px rgba(0, 123, 255, 0.3);
+}
+
+/* Buttons */
+.account-settings-container .save-button,
+.account-settings-container .reset-button,
+.account-settings-container .delete-button {
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    text-align: center;
+}
+
+/* Save Button */
+.account-settings-container .save-button {
+    background-color: #28a745;
+    color: white;
+}
+
+.account-settings-container .save-button:hover {
+    background-color: #218838;
+}
+
+/* Reset Button */
+.account-settings-container .reset-button {
+    background-color: #dc3545;
+    color: white;
+}
+
+.account-settings-container .reset-button:hover {
+    background-color: #c82333;
+}
+
+/* Account Danger Zone */
+.account-danger-zone {
+    background: #fff;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 8px;
+}
+
+.account-danger-zone h3 {
+    color: #e74c3c;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* Delete Account Button */
+.account-settings-container .delete-button {
+    width: 100%;
+    background-color: #e74c3c;
+    color: white;
+    font-weight: bold;
+}
+
+.account-settings-container .delete-button:hover {
+    background-color: #c0392b;
+}
+
+/* ======================= */
+/* 🔹 Responsive Design */
+/* ======================= */
+
+@media (max-width: 768px) {
+    .account-settings-container {
+        max-width: 100%;
+        padding: 15px;
+    }
+
+    .account-settings-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .account-settings-container .save-button,
+    .account-settings-container .reset-button,
+    .account-settings-container .delete-button {
+        width: 100%;
+    }
+}

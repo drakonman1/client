@@ -198,8 +198,8 @@ table tr:hover {
     border-radius: 12px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     width: 90%;
-    max-width: 1000px;
-    max-height: 100vh; /* Ensures modal doesn’t exceed screen height */
+    max-width: 900px;
+    max-height: 90vh; /* Ensures modal doesn’t exceed screen height */
     position: relative;
     display: flex;
     flex-direction: column;

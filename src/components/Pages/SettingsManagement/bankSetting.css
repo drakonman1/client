@@ -1,0 +1,30 @@
+.bank-settings-container {
+    padding: 20px;
+}
+
+.bank-settings-container label {
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+}
+
+.bank-settings-container textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.bank-settings-container button {
+    margin-top: 10px;
+    background-color: #17a2b8;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.bank-settings-container button:hover {
+    background-color: #138496;
+}

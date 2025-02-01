@@ -1,0 +1,97 @@
+/* ======================= */
+/* 🔹 Modal Styles (For Settings Popups) */
+/* ======================= */
+
+/* Dark background overlay when modal is open */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Modal Container */
+.modal {
+    position: relative;
+    width: 800px; /* Default modal width */
+    max-width: 90%;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Centering the modal properly */
+@media (min-width: 1024px) {
+    .modal {
+        width: 600px;
+    }
+}
+
+/* Close Button */
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 10px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.2s ease-in-out;
+}
+
+.close-modal:hover {
+    background: #c82333;
+}
+
+/* Smooth Fade-In Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ======================= */
+/* 🔹 Responsive Design */
+/* ======================= */
+
+@media (max-width: 768px) {
+    .modal {
+        width: 90%;
+        padding: 20px;
+    }
+
+    .close-modal {
+        top: 10px;
+        right: 10px;
+        padding: 8px 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal {
+        width: 95%;
+        padding: 15px;
+    }
+
+    .close-modal {
+        font-size: 0.9rem;
+        padding: 6px 8px;
+    }
+}

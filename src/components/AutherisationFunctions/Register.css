@@ -1,0 +1,130 @@
+/* src/components/Register.css */
+
+.register-container {
+    padding: 40px;
+    max-width: 500px;
+    margin: 50px auto;
+    border-radius: 12px;
+    background-color: #ffffff;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    transition: transform 0.2s ease-in-out;
+}
+
+.register-container:hover {
+    transform: translateY(-3px);
+}
+
+.register-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.register-logo {
+    width: 140px;
+    margin-bottom: 12px;
+}
+
+.register-title {
+    color: #2c3e50;
+    font-size: 26px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.register-description {
+    color: #555;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.register-input, .register-select {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 14px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+    background: #f9f9f9;
+    transition: border-color 0.3s ease;
+}
+
+.register-input:focus, .register-select:focus {
+    border-color: #007bff;
+    outline: none;
+    background: #fff;
+}
+
+.register-select {
+    appearance: none;
+    background: #fff url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="#000" d="M2 0L0 2h4zM2 5l2-2H0z"/></svg>') no-repeat right 14px center;
+    background-size: 12px;
+}
+
+.register-button {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.register-button:hover {
+    background: linear-gradient(135deg, #0056b3, #004080);
+    transform: translateY(-2px);
+}
+
+.register-error {
+    background-color: #f8d7da;
+    color: #842029;
+    padding: 14px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.terms-conditions {
+    font-size: 12px;
+    color: #555;
+    margin-top: 10px;
+}
+
+.terms-conditions a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.terms-conditions a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+    .register-container {
+        padding: 25px;
+        max-width: 90%;
+    }
+
+    .register-title {
+        font-size: 22px;
+    }
+
+    .register-button {
+        font-size: 16px;
+    }
+}

@@ -1,0 +1,93 @@
+/* 🔹 Tax Settings Container */
+.tax-settings-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    background: #ffffff; /* ✅ White Background */
+    border-radius: 10px;
+}
+
+/* Labels */
+.tax-settings-container label {
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+/* Tooltip Icon */
+.tooltip-icon {
+    font-size: 0.9rem;
+    color: #007bff;
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+/* Inputs & Selects */
+.tax-settings-container .text-input,
+.tax-settings-container .select-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    background: #f8f9fa;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Select Dropdown */
+.tax-settings-container .select-input {
+    appearance: none;
+    cursor: pointer;
+}
+
+/* Hover Effects */
+.tax-settings-container .text-input:hover,
+.tax-settings-container .select-input:hover {
+    border-color: #007bff;
+}
+
+/* Focus Effects */
+.tax-settings-container .text-input:focus,
+.tax-settings-container .select-input:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 6px rgba(0, 123, 255, 0.3);
+}
+
+/* Buttons */
+.tax-settings-container .save-button,
+.tax-settings-container .reset-button {
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    text-align: center;
+}
+
+/* Save Button */
+.tax-settings-container .save-button {
+    background-color: #28a745;
+    color: white;
+}
+
+.tax-settings-container .save-button:hover {
+    background-color: #218838;
+}
+
+/* Reset Button */
+.tax-settings-container .reset-button {
+    background-color: #dc3545;
+    color: white;
+}
+
+.tax-settings-container .reset-button:hover {
+    background-color: #c82333;
+}

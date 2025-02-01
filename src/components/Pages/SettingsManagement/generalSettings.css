@@ -1,0 +1,30 @@
+.general-settings-container {
+    padding: 20px;
+}
+
+.general-settings-container label {
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+}
+
+.general-settings-container select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.general-settings-container button {
+    margin-top: 10px;
+    background-color: #6c757d;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.general-settings-container button:hover {
+    background-color: #5a6268;
+}

@@ -1,8 +1,18 @@
-import React, { useState, useEffect } from "react";
-import "./Settings.css"; // Import styles
-import { toast } from "react-toastify";
+import React, { useState } from "react";
+import Sidebar from "../Sidebar";
+import "./Settings.css"; 
+
+// Import settings sections
+import BusinessSettings from "./BusinessSettings";
+import AccountSettings from "./AccountSettings";
+import TaxSettings from "./TaxSettings";
+import BankSettings from "./BankSettings";
+import GeneralSettings from "./GeneralSettings";
 
 const Settings = () => {
+    const [activeSection, setActiveSection] = useState(null);
+
+    // Main settings state
     const [settings, setSettings] = useState({
         businessName: "",
         address: "",
@@ -14,102 +24,83 @@ const Settings = () => {
         paymentTerms: "Net 30",
         currency: "USD",
         bankDetails: "",
+        businessType: "Sole Proprietor",
+        taxExempt: false,
+        defaultDiscount: 0,
     });
 
-    // Load settings from local storage on mount
-    useEffect(() => {
-        const savedSettings = localStorage.getItem("invoiceSettings");
-        if (savedSettings) {
-            setSettings(JSON.parse(savedSettings));
-        }
-    }, []);
-
-    // Handle input change
+    // Handles input changes
     const handleChange = (e) => {
-        setSettings({ ...settings, [e.target.name]: e.target.value });
-    };
-
-    // Save settings to local storage
-    const handleSave = () => {
-        localStorage.setItem("invoiceSettings", JSON.stringify(settings));
-        toast.success("Settings saved successfully!");
-    };
-
-    // Reset settings to default
-    const handleReset = () => {
+        const { name, type, checked, value } = e.target;
         setSettings({
-            businessName: "",
-            address: "",
-            phone: "",
-            email: "",
-            website: "",
-            vatNumber: "",
-            taxRate: "",
-            paymentTerms: "Net 30",
-            currency: "USD",
-            bankDetails: "",
+            ...settings,
+            [name]: type === "checkbox" ? checked : value,
         });
-        localStorage.removeItem("invoiceSettings");
-        toast.info("Settings reset to default!");
+    };
+
+    // Open a section as the main view
+    const openSection = (sectionName) => {
+        console.log(`Opening section: ${sectionName}`);
+        setActiveSection(sectionName);
+    };
+
+    // Close the active section and return to the grid
+    const closeSection = () => {
+        console.log("Returning to settings grid");
+        setActiveSection(null);
     };
 
     return (
-        <div className="settings-container">
-            <h2>Business Settings</h2>
-            <p>Manage your business information for invoices.</p>
-
-            <div className="settings-section">
-                <h3>Business Information</h3>
-                <label>Business Name</label>
-                <input type="text" name="businessName" value={settings.businessName} onChange={handleChange} />
-
-                <label>Address</label>
-                <textarea name="address" value={settings.address} onChange={handleChange} />
-
-                <label>Phone Number</label>
-                <input type="text" name="phone" value={settings.phone} onChange={handleChange} />
-
-                <label>Email</label>
-                <input type="email" name="email" value={settings.email} onChange={handleChange} />
-
-                <label>Website</label>
-                <input type="text" name="website" value={settings.website} onChange={handleChange} />
+        <div className="page-container">
+            <div className="sidebar">
+                <Sidebar />
             </div>
 
-            <div className="settings-section">
-                <h3>Tax & Invoicing</h3>
-                <label>VAT/GST Number</label>
-                <input type="text" name="vatNumber" value={settings.vatNumber} onChange={handleChange} />
+            <div className="settings-container">
+                {/* Hide the title when a section is open */}
+                {!activeSection && (
+                    <>
+                        <h2>Settings</h2>
+                        <p>Manage all your business and account settings here.</p>
+                    </>
+                )}
 
-                <label>Default Tax Rate (%)</label>
-                <input type="number" name="taxRate" value={settings.taxRate} onChange={handleChange} />
+                {/* Show Back Button when a section is open */}
+                {activeSection && (
+                    <button className="back-button" onClick={closeSection}>⬅ Back to Settings</button>
+                )}
 
-                <label>Default Payment Terms</label>
-                <select name="paymentTerms" value={settings.paymentTerms} onChange={handleChange}>
-                    <option value="Net 7">Net 7</option>
-                    <option value="Net 15">Net 15</option>
-                    <option value="Net 30">Net 30</option>
-                    <option value="Net 60">Net 60</option>
-                </select>
+                {/* Show Settings Grid if No Section is Active */}
+                {!activeSection && (
+                    <div className="settings-grid">
+                        <div className="settings-card" onClick={() => openSection("business")}>
+                            <h3>Business Settings</h3>
+                        </div>
+                        <div className="settings-card" onClick={() => openSection("account")}>
+                            <h3>Account Settings</h3>
+                        </div>
+                        <div className="settings-card" onClick={() => openSection("tax")}>
+                            <h3>Tax & Invoicing</h3>
+                        </div>
+                        <div className="settings-card" onClick={() => openSection("bank")}>
+                            <h3>Bank Details</h3>
+                        </div>
+                        <div className="settings-card" onClick={() => openSection("general")}>
+                            <h3>General Settings</h3>
+                        </div>
+                    </div>
+                )}
 
-                <label>Default Currency</label>
-                <select name="currency" value={settings.currency} onChange={handleChange}>
-                    <option value="USD">USD ($)</option>
-                    <option value="EUR">EUR (€)</option>
-                    <option value="GBP">GBP (£)</option>
-                    <option value="CAD">CAD (C$)</option>
-                </select>
-            </div>
-
-            <div className="settings-section">
-                <h3>Bank Details</h3>
-                <label>Bank Account Details</label>
-                <textarea name="bankDetails" value={settings.bankDetails} onChange={handleChange} />
-            </div>
-
-            <div className="settings-actions">
-                <button onClick={handleSave} className="save-button">Save Settings</button>
-                <button onClick={handleReset} className="reset-button">Reset to Defaults</button>
+                {/* Render the Selected Settings Section */}
+                {activeSection && (
+                    <div className="settings-section">
+                        {activeSection === "business" && <BusinessSettings settings={settings} handleChange={handleChange} />}
+                        {activeSection === "account" && <AccountSettings />}
+                        {activeSection === "tax" && <TaxSettings settings={settings} handleChange={handleChange} />}
+                        {activeSection === "bank" && <BankSettings settings={settings} handleChange={handleChange} />}
+                        {activeSection === "general" && <GeneralSettings />}
+                    </div>
+                )}
             </div>
         </div>
     );

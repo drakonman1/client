@@ -1,0 +1,140 @@
+/* ======================= */
+/* 🔹 Business Settings Styles */
+/* ======================= */
+
+.business-settings-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+    width: 100%;
+    max-width: 600px; /* Restrict max width for better layout */
+    margin: 0 auto; /* Center content */
+}
+
+/* Labels */
+.business-settings-container label {
+    font-weight: bold;
+    display: block;
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+/* Inputs & Selects */
+.business-settings-container .text-input,
+.business-settings-container .select-input,
+.business-settings-container .textarea-input,
+.business-settings-container .file-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    background: #f8f9fa; /* Light gray background */
+    transition: all 0.2s ease-in-out;
+}
+
+/* Textarea Specific */
+.business-settings-container .textarea-input {
+    height: 100px;
+    resize: vertical;
+}
+
+/* File Input Styling */
+.business-settings-container .file-input {
+    padding: 8px;
+    border: none;
+    background: transparent;
+}
+
+/* File Input Custom Style */
+.business-settings-container .file-input::file-selector-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.business-settings-container .file-input::file-selector-button:hover {
+    background-color: #0056b3;
+}
+
+/* Hover Effects */
+.business-settings-container .text-input:hover,
+.business-settings-container .select-input:hover,
+.business-settings-container .textarea-input:hover {
+    border-color: #007bff;
+}
+
+/* Focus Effects */
+.business-settings-container .text-input:focus,
+.business-settings-container .select-input:focus,
+.business-settings-container .textarea-input:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 6px rgba(0, 123, 255, 0.3);
+}
+
+/* Buttons */
+.business-settings-container .save-button,
+.business-settings-container .reset-button {
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    text-align: center;
+}
+
+/* Save Button */
+.business-settings-container .save-button {
+    background-color: #28a745;
+    color: white;
+}
+
+.business-settings-container .save-button:hover {
+    background-color: #218838;
+}
+
+/* Reset Button */
+.business-settings-container .reset-button {
+    background-color: #dc3545;
+    color: white;
+}
+
+.business-settings-container .reset-button:hover {
+    background-color: #c82333;
+}
+
+/* Button Group */
+.business-settings-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+/* ======================= */
+/* 🔹 Responsive Design */
+/* ======================= */
+
+@media (max-width: 768px) {
+    .business-settings-container {
+        max-width: 100%; /* Allow full width for smaller screens */
+        padding: 15px;
+    }
+
+    .business-settings-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .business-settings-container .save-button,
+    .business-settings-container .reset-button {
+        width: 100%;
+    }
+}
