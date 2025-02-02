@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { onAuthStateChanged } from "firebase/auth"; // ✅ Add onAuthStateChanged
 import { useNavigate } from "react-router-dom";
 import { getAuth } from "firebase/auth";
 import Sidebar from "./Sidebar";
@@ -24,6 +25,9 @@ import {
 } from "react-icons/fa";
 import { Bar, Pie } from "react-chartjs-2";
 import "chart.js/auto";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../Firebase/firebaseconfig";
+
 
 const Dashboard = () => {
     const auth = getAuth();
@@ -39,14 +43,13 @@ const Dashboard = () => {
         payroll: false,
         businessClients: false
     });
-
-    const [invoices, setInvoices] = useState([
-        { id: 1, invoiceNumber: "INV-1001", client: "Client A", total: 500, status: "Paid", dueDate: "2024-02-01" },
-        { id: 2, invoiceNumber: "INV-1002", client: "Client B", total: 1200, status: "Unpaid", dueDate: "2024-02-10" },
-        { id: 3, invoiceNumber: "INV-1003", client: "Client C", total: 700, status: "Overdue", dueDate: "2024-01-15" },
-    ]);
+    const [userId, setUserId] = useState(null);
+    const [businessId, setBusinessId] = useState(null);
+    const [invoices, setInvoices] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const dashboardStats = {
+        
         totalInvoices: invoices.length,
         pendingInvoices: invoices.filter(inv => inv.status === "Unpaid").length,
         paidInvoices: invoices.filter(inv => inv.status === "Paid").length,
@@ -60,8 +63,60 @@ const Dashboard = () => {
     };
 
     useEffect(() => {
-        setInvoices([...invoices]); // Fetch real invoices here
+        const auth = getAuth();
+        
+        // ✅ Listen for authentication state changes
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                setUserId(user.uid);
+                await fetchBusinessId(user.uid);  // Fetch business ID dynamically
+            } else {
+                setUserId(null);
+                setBusinessId(null);
+                setInvoices([]);
+            }
+        });
+
+        return () => unsubscribe();
     }, []);
+    
+    const fetchBusinessId = async (userId) => {
+        try {
+            const businessCollection = collection(db, `users/${userId}/business`);
+            const businessSnapshot = await getDocs(businessCollection);
+
+            if (!businessSnapshot.empty) {
+                const businessDoc = businessSnapshot.docs[0]; // Assuming only one business per user
+                setBusinessId(businessDoc.id);
+                fetchInvoices(userId, businessDoc.id); // Fetch invoices after business ID is set
+            }
+        } catch (error) {
+            console.error("Error fetching business ID:", error);
+        }
+    };
+    const fetchInvoices = async (userId, businessId) => {
+        setLoading(true);
+        try {
+            const invoicesCollection = collection(db, `users/${userId}/business/${businessId}/invoices`);
+            const invoicesSnapshot = await getDocs(invoicesCollection);
+    
+            const fetchedInvoices = invoicesSnapshot.docs.map(doc => {
+                const data = doc.data();
+                return {
+                    id: doc.id,
+                    ...data,
+                    status: data.status || 'Unpaid' // Set default status if missing
+                };
+            });
+    
+            setInvoices(fetchedInvoices);
+        } catch (error) {
+            console.error("Error fetching invoices:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     const toggleSection = (section) => {
         setCollapsedSections((prev) => ({
@@ -75,7 +130,11 @@ const Dashboard = () => {
         datasets: [
             {
                 label: "Invoices",
-                data: [dashboardStats.paidInvoices, dashboardStats.pendingInvoices, dashboardStats.overdueInvoices],
+                data: [
+                    dashboardStats.paidInvoices, 
+                    dashboardStats.pendingInvoices, 
+                    dashboardStats.overdueInvoices
+                ],
                 backgroundColor: ["#28a745", "#ffc107", "#dc3545"],
                 borderRadius: 6,
             },

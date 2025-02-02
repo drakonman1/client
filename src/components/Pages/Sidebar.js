@@ -1,20 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
-    Home,
-    FileText,
-    Settings,
-    Shield,
-    LogOut,
-    Search,
-    User,
-    ChevronDown,
-    ChevronUp,
-    Bell,
-    Star,
-    Moon,
-    Sun,
+    Home, FileText, Settings, Shield, LogOut, Search, User,
+    ChevronDown, ChevronUp, Bell, Star, Moon, Sun
 } from "lucide-react";
 import { useLocation } from "react-router-dom";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "../Firebase/firebaseconfig"; // Ensure correct path
 import "./Sidebar.css";
 
 const Sidebar = () => {
@@ -24,10 +16,38 @@ const Sidebar = () => {
     const [isRecentOpen, setIsRecentOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [darkMode, setDarkMode] = useState(false);
+    const [userName, setUserName] = useState(""); // Default name
+
+    useEffect(() => {
+        const auth = getAuth();
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                try {
+                    // Directly access the user document from 'users' collection
+                    const userRef = doc(db, "users", user.uid);
+                    const userSnap = await getDoc(userRef);
+    
+                    if (userSnap.exists()) {
+                        const userData = userSnap.data();
+                        // Access the name from personalInfo
+                        setUserName(userData.personalInfo?.name || "User");
+                    } else {
+                        console.warn("User document not found");
+                        setUserName("User");
+                    }
+                } catch (error) {
+                    console.error("Error fetching user data:", error.message);
+                    setUserName("User");
+                }
+            }
+        });
+    
+        return () => unsubscribe();
+    }, []);
 
     const mainLinks = [
-        { path: "/dashboard", label: "Home", Icon: Home, notifications: 0 },
-        { path: "/invoices", label: "Invoices", Icon: FileText, notifications: 3 },
+        { path: "/admin-dashboard", label: "Home", Icon: Home, notifications: 0 },
+        { path: "/invoices", label: "Invoices", Icon: FileText, notifications: 0 },
         { path: "/settings", label: "Settings", Icon: Settings, notifications: 0 },
     ];
 
@@ -53,7 +73,7 @@ const Sidebar = () => {
             <div className="sidebar-header">
                 <div className="profile-container">
                     <User className="profile-icon" />
-                    <span className="profile-name">John Doe</span>
+                    <span className="profile-name">{userName}</span>
                 </div>
             </div>
 
