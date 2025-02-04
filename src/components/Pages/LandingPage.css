@@ -407,6 +407,7 @@
   @media (max-width: 768px) {
     .hamburger-menu {
       display: block;
+      color: #000;
     }
   
     .nav-links {

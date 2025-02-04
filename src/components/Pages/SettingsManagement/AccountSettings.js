@@ -1,70 +1,156 @@
-import React, { useState } from "react";
-import "./accountSettings.css"; // ✅ Import Account-specific CSS
+import React, { useState, useEffect } from "react";
+import { fetchDocument, updateDocument } from "../../Firebase/firestore";
+import { useAuth } from "../../AutherisationFunctions/Contexts/AuthContext";
+import "./accountSettings.css";
 
 const AccountSettings = () => {
-    const [twoFactor, setTwoFactor] = useState(false);
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [notificationPref, setNotificationPref] = useState("email");
-    const [accountStatus, setAccountStatus] = useState("active");
+    const { currentUser } = useAuth();
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
+    
+    // Account state
+    const [accountData, setAccountData] = useState({
+        personalInfo: {
+            name: "",
+            email: "",
+            phone: "",
+            profilePicture: ""
+        },
+        plan: "free",
+        status: "active",
+        notificationPref: "email",
+        twoFactor: false
+    });
+
+    // Load account data
+    useEffect(() => {
+        const loadAccountData = async () => {
+            try {
+                const data = await fetchDocument("users", currentUser.uid);
+                setAccountData(prev => ({
+                    ...prev,
+                    ...data,
+                    personalInfo: data.personalInfo || prev.personalInfo
+                }));
+            } catch (error) {
+                setError("Failed to load account data");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (currentUser) loadAccountData();
+    }, [currentUser]);
+
+    // Handle form updates
+    const handleUpdate = async (e) => {
+        e.preventDefault();
+        setError("");
+        setSuccess("");
+
+        try {
+            await updateDocument("users", currentUser.uid, {
+                ...accountData,
+                lastUpdated: new Date().toISOString()
+            });
+            setSuccess("Account settings updated successfully!");
+            setTimeout(() => setSuccess(""), 3000);
+        } catch (error) {
+            setError("Failed to update account settings");
+        }
+    };
+
+    // Handle input changes
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        if (name in accountData.personalInfo) {
+            setAccountData(prev => ({
+                ...prev,
+                personalInfo: {
+                    ...prev.personalInfo,
+                    [name]: value
+                }
+            }));
+        } else {
+            setAccountData(prev => ({
+                ...prev,
+                [name]: value
+            }));
+        }
+    };
+
+    if (loading) return <div className="loading-spinner">Loading...</div>;
 
     return (
         <div className="account-settings-container">
             <h2>Account Settings</h2>
 
+            {/* Error/Success Messages */}
+            {error && <div className="error-message">{error}</div>}
+            {success && <div className="success-message">{success}</div>}
+
             {/* Profile Information */}
-            <label>Username</label>
-            <input type="text" name="username" className="text-input" placeholder="Enter username" disabled />
+            <label>Full Name</label>
+            <input
+                type="text"
+                name="name"
+                className="text-input"
+                value={accountData.personalInfo.name}
+                onChange={handleInputChange}
+            />
 
             <label>Email</label>
-            <input type="email" name="email" className="text-input" placeholder="Enter email" disabled />
-
-            {/* Password Change */}
-            <label>New Password</label>
             <input
-                type="password"
-                name="password"
-                className="password-input"
-                placeholder="Enter new password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                type="email"
+                name="email"
+                className="text-input"
+                value={accountData.personalInfo.email}
+                onChange={handleInputChange}
+                disabled
             />
 
-            <label>Confirm Password</label>
+            <label>Phone Number</label>
             <input
-                type="password"
-                name="confirmPassword"
-                className="password-input"
-                placeholder="Confirm new password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                disabled={!password} /* Disable if no new password entered */
+                type="tel"
+                name="phone"
+                className="text-input"
+                value={accountData.personalInfo.phone}
+                onChange={handleInputChange}
+                placeholder="Enter phone number"
             />
+
+            {/* Account Status */}
+            <label>Account Plan</label>
+            <div className="account-plan-display">
+                <span className={`plan-badge ${accountData.plan}`}>
+                    {accountData.plan.toUpperCase()}
+                </span>
+                <span>Created: {new Date(accountData.createdAt).toLocaleDateString()}</span>
+                <span>Last Login: {new Date(accountData.lastLogin).toLocaleDateString()}</span>
+            </div>
 
             {/* Security Options */}
             <label className="checkbox-label">
                 <input
                     type="checkbox"
                     className="checkbox-input"
-                    checked={twoFactor}
-                    onChange={() => setTwoFactor(!twoFactor)}
+                    checked={accountData.twoFactor}
+                    onChange={(e) => setAccountData(prev => ({
+                        ...prev,
+                        twoFactor: e.target.checked
+                    }))}
                 />
                 Enable Two-Factor Authentication (2FA)
             </label>
-
-            <label>Recent Login Activity</label>
-            <textarea className="textarea-input" disabled>
-📍 New York, USA - Yesterday
-📍 London, UK - Last Week
-📍 Tokyo, Japan - 2 Weeks Ago
-            </textarea>
 
             {/* Notification Preferences */}
             <label>Notification Preferences</label>
             <select
                 className="select-input"
-                value={notificationPref}
-                onChange={(e) => setNotificationPref(e.target.value)}
+                name="notificationPref"
+                value={accountData.notificationPref}
+                onChange={handleInputChange}
             >
                 <option value="email">📧 Email Notifications</option>
                 <option value="sms">📱 SMS Notifications</option>
@@ -76,23 +162,30 @@ const AccountSettings = () => {
             <label>Account Status</label>
             <select
                 className="select-input"
-                value={accountStatus}
-                onChange={(e) => setAccountStatus(e.target.value)}
+                name="status"
+                value={accountData.status}
+                onChange={handleInputChange}
             >
                 <option value="active">✅ Active</option>
                 <option value="deactivated">⚠️ Deactivate Account</option>
             </select>
 
-            {/* Buttons */}
+            {/* Save Button */}
             <div className="account-settings-actions">
-                <button className="save-button">Update Account Settings</button>
-                <button className="reset-button">Reset to Defaults</button>
+                <button 
+                    className="save-button"
+                    onClick={handleUpdate}
+                >
+                    Update Account Settings
+                </button>
             </div>
 
             {/* Account Danger Zone */}
             <div className="account-danger-zone">
                 <h3>⚠️ Danger Zone</h3>
-                <button className="delete-button">❌ Delete My Account</button>
+                <button className="delete-button">
+                    ❌ Delete My Account
+                </button>
             </div>
         </div>
     );

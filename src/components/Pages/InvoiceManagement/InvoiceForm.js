@@ -211,36 +211,6 @@ const InvoiceForm = ({ formState, setFormState, onSave }) => {
         }
     };
 
-    const saveAsTemplate = () => {
-        const templateName = prompt("Enter a name for this template:");
-        if (templateName) {
-            const templates = JSON.parse(localStorage.getItem('invoiceTemplates') || '[]');
-            const newTemplate = {
-                name: templateName,
-                data: { ...formState.invoice }
-            };
-            templates.push(newTemplate);
-            localStorage.setItem('invoiceTemplates', JSON.stringify(templates));
-            setSavedTemplates(templates);
-            toast.success("Template saved successfully!");
-        }
-    };
-    
-    const loadTemplate = (template) => {
-        setFormState(prev => ({
-            ...prev,
-            invoice: { 
-                ...template.data, 
-                invoiceNumber: generateInvoiceNumber(template.data.type),
-                dateIssued: new Date().toISOString().split('T')[0],
-                dueDate: ''
-            }
-        }));
-        setSelectedTemplate(template);
-        toast.info("Template loaded!");
-    };
-
-
     const addItem = () => {
         setFormState((prev) => ({
             ...prev,

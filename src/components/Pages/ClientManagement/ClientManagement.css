@@ -1,0 +1,473 @@
+/* ✅ ClientManagement.css - Improved Version */
+
+/* Full-page layout with Sidebar */
+.client-management {
+    display: flex;
+    min-height: 100vh;
+    background: linear-gradient(145deg, #f8f9fa, #e9ecef); /* Gradient background */
+    font-family: 'Inter', sans-serif; /* Modern font */
+}
+
+/* Main Content */
+.client-container {
+    flex: 1;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+    max-width: 1200px;
+    margin: 2rem auto;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+h1 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: #2d3748;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+h2 {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #2d3748;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+/* Add Client Button */
+.add-client-btn {
+    display: block;
+    width: 100%;
+    max-width: 240px;
+    margin: 1rem auto;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0px 4px 6px rgba(0, 123, 255, 0.2);
+}
+
+.add-client-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0px 6px 12px rgba(0, 123, 255, 0.3);
+}
+
+/* Search Bar */
+.search-bar {
+    display: block;
+    width: 100%;
+    max-width: 400px;
+    margin: 1rem auto;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    background: #fff;
+    transition: all 0.3s ease;
+}
+
+.search-bar:focus {
+    border-color: #007bff;
+    box-shadow: 0px 0px 8px rgba(0, 123, 255, 0.2);
+    outline: none;
+}
+
+/* Client Table */
+.client-table {
+    width: 100%;
+    margin-top: 2rem;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.client-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.client-table th {
+    background: #2d3748;
+    color: white;
+    padding: 1rem;
+    text-align: left;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.client-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #edf2f7;
+    font-size: 0.9rem;
+    color: #4a5568;
+}
+
+.client-table tbody tr {
+    transition: background 0.2s ease;
+}
+
+.client-table tbody tr:hover {
+    background: #f7fafc;
+}
+
+/* Client Actions */
+.client-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.client-actions button {
+    padding: 0.5rem 1rem;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.client-actions button:first-child {
+    background: #ffc107;
+    color: #1a202c;
+}
+
+.client-actions button:first-child:hover {
+    background: #e0a800;
+    transform: translateY(-1px);
+}
+
+.client-actions button:last-child {
+    background: #dc3545;
+    color: white;
+}
+
+.client-actions button:last-child:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+}
+
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+}
+
+/* Modal Content */
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.2);
+    animation: slideIn 0.3s ease-out;
+    position: relative;
+}
+
+/* Close Button */
+.close-modal {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    cursor: pointer;
+    font-size: 1.25rem;
+    color: #718096;
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    transition: color 0.2s ease;
+}
+
+.close-modal:hover {
+    color: #2d3748;
+}
+
+/* Form Styling */
+.client-form input,
+.client-form textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    margin-top: 0.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+}
+
+.client-form input:focus,
+.client-form textarea:focus {
+    border-color: #007bff;
+    box-shadow: 0px 0px 8px rgba(0, 123, 255, 0.2);
+    outline: none;
+}
+
+/* Form Buttons */
+.form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+}
+
+.form-buttons button {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.form-buttons button:first-child {
+    background: #007bff;
+    color: white;
+}
+
+.form-buttons button:first-child:hover {
+    background: #0056b3;
+    transform: translateY(-1px);
+}
+
+.form-buttons button:last-child {
+    background: #6c757d;
+    color: white;
+}
+
+.form-buttons button:last-child:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+
+/* ✅ Mobile Styling for Client Management */
+@media (max-width: 768px) {
+    /* Global Styles */
+    body {
+        font-size: 14px;
+        background: #f8f9fa;
+    }
+
+    /* 🏠 Mobile Layout */
+    .client-management {
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    .client-container {
+        width: 100%;
+        padding: 1rem;
+        margin: 0 auto;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    h1 {
+        font-size: 1.5rem;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    /* 🏗 Sidebar Adjustments */
+    .sidebar {
+        display: flex;
+        justify-content: center;
+        padding: 1rem 0;
+        background: #2d3748;
+        border-radius: 8px;
+        text-align: center;
+    }
+
+    .sidebar a {
+        color: white;
+        font-size: 1rem;
+        padding: 0.75rem;
+        display: block;
+        width: 100%;
+    }
+
+    .sidebar a:hover {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 6px;
+    }
+
+    /* 📋 Form Inputs */
+    .client-form input,
+    .client-form textarea {
+        font-size: 1rem;
+        padding: 0.75rem;
+        width: 100%;
+        border-radius: 6px;
+    }
+
+    /* 🔍 Search Bar */
+    .search-bar {
+        max-width: 100%;
+        padding: 0.75rem;
+        font-size: 1rem;
+        margin: 1rem 0;
+    }
+
+    /* ➕ Add Client Button */
+    .add-client-btn {
+        width: 100%;
+        max-width: 100%;
+        font-size: 1.1rem;
+        padding: 0.75rem;
+    }
+
+    /* 📑 Mobile-Optimised Table (Turns into a List) */
+    .client-table {
+        width: 100%;
+        margin-top: 1rem;
+        box-shadow: none;
+        border-radius: 0;
+    }
+
+    .client-table table {
+        display: block;
+        width: 100%;
+    }
+
+    /* 🚀 Table -> Card-Style List for Mobile */
+    .client-table thead {
+        display: none;
+    }
+
+    .client-table tbody {
+        display: block;
+        width: 100%;
+    }
+
+    .client-table tbody tr {
+        display: flex;
+        flex-direction: column;
+        padding: 1rem;
+        border-bottom: 1px solid #e2e8f0;
+        background: white;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+        box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    .client-table td {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        font-size: 1rem;
+        font-weight: 500;
+    }
+
+    .client-table td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: #2d3748;
+    }
+
+    /* 🎛 Client Actions */
+    .client-actions {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .client-actions button {
+        font-size: 0.9rem;
+        padding: 0.6rem 1rem;
+        width: 48%;
+    }
+
+    /* 📌 Modal */
+    .modal-overlay {
+        padding: 1rem;
+        align-items: center;
+    }
+
+    .modal-content {
+        width: 100%;
+        max-width: 400px;
+        padding: 1.5rem;
+    }
+
+    /* ✨ Form Buttons */
+    .form-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .form-buttons button {
+        width: 100%;
+        margin-top: 0.5rem;
+        font-size: 1rem;
+    }
+
+    /* ✅ Animations */
+    @keyframes fadeInMobile {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideInMobile {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}

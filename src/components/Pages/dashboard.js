@@ -197,6 +197,11 @@ const Dashboard = () => {
                     </div>
                     {!collapsedSections.invoices && (
                         <div className="dashboard-cards">
+                            <div className="dashboard-card" onClick={() => navigate("/invoices")}>
+                                <FaFileInvoiceDollar className="dashboard-icon" />
+                                <h3>Invoice Manager</h3>
+                                <p>Manage all your invoices in one place</p>
+                            </div>
                             <div className="dashboard-card" onClick={() => openInvoiceModal("all")}>
                                 <FaFileInvoiceDollar className="dashboard-icon" />
                                 <h3>Total Invoices</h3>
@@ -268,18 +273,13 @@ const Dashboard = () => {
                         <div className="dashboard-cards">
                             <div className="dashboard-card" onClick={() => navigate("/clients")}>
                                 <FaUsers className="dashboard-icon" />
-                                <h3>New Clients</h3>
-                                <p>{dashboardStats.newClients} Added This Month</p>
+                                <h3>Manage Clients</h3>
+                                <p>Add / Remove client details</p>
                             </div>
-                            <div className="dashboard-card" onClick={() => navigate("/clients/all")}>
+                            <div className="dashboard-card" onClick={() => navigate("/clients")}>
                                 <FaUserFriends className="dashboard-icon" />
                                 <h3>All Clients</h3>
                                 <p>View and Manage All Clients</p>
-                            </div>
-                            <div className="dashboard-card revenue">
-                                <FaChartBar className="dashboard-icon" />
-                                <h3>Monthly Revenue</h3>
-                                <p>${dashboardStats.monthlyRevenue}</p>
                             </div>
                             <div className="dashboard-card analytics" onClick={() => navigate("/analytics/clients")}>
                                 <FaChartPie className="dashboard-icon" />
