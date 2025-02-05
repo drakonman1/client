@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 12
+names: ['Billa', 'Hofer', 'Spar', 'Unimarkt', 'address', 'article', 'date', 'invoice', 'payment information', 'price', 'sum', 'tax information']
+
+roboflow:
+  workspace: jakob-awn1e
+  project: invoice-detection
+  version: 28
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/jakob-awn1e/invoice-detection/dataset/28

@@ -265,7 +265,7 @@
 /* DRAG & DROP UPLOAD */
 /* ========================= */
 
-.invoice-form .file-drop-zone {
+ .file-drop-zone {
     border: 2px dashed #6b7280;
     padding: 10px;
     text-align: center;
@@ -275,12 +275,12 @@
     transition: border-color 0.3s ease, background-color 0.3s ease;
 }
 
-.invoice-form .file-drop-zone:hover {
+ .file-drop-zone:hover {
     background-color: #e5e7eb;
     border-color: #4b5563;
 }
 
-.invoice-form .file-drop-zone.drag-over {
+.file-drop-zone.drag-over {
     background-color: #d1d5db;
     border-color: #1f2937;
 }

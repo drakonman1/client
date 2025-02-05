@@ -8,6 +8,8 @@ import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
 import { generateInvoiceNumber } from './utils/invoiceUtils';
 
+
+
 // Enhanced Invoice Validation Schema
 const invoiceSchema = Yup.object().shape({
     invoiceNumber: Yup.string().required("Invoice Number is required"),
@@ -48,6 +50,7 @@ const invoiceSchema = Yup.object().shape({
 const InvoiceForm = ({ formState, setFormState, onSave }) => {
     // ALL hooks must be declared first, unconditionally
     const [file, setFile] = useState(null);
+    const [uploadProgress, setUploadProgress] = useState(0);
     const [errors, setErrors] = useState({});
     const [total, setTotal] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
@@ -56,6 +59,7 @@ const InvoiceForm = ({ formState, setFormState, onSave }) => {
     const [subTotal, setSubTotal] = useState(0);
     const [taxAmount, setTaxAmount] = useState(0);
 
+ 
     // Initialize the form state if it's empty - use useCallback to memoize the initialization
     const initializeForm = useCallback(() => {
         if (!formState?.invoice) {
@@ -150,66 +154,74 @@ const InvoiceForm = ({ formState, setFormState, onSave }) => {
         }));
     };
 
-    const handleFileUploadAndImport = (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-    
-        const fileExt = file.name.split('.').pop().toLowerCase();
-        
-        if (['csv', 'xlsx', 'xls'].includes(fileExt)) {
-            // Handle Import (CSV or Excel)
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                if (fileExt === 'csv') {
-                    Papa.parse(event.target.result, {
-                        complete: (results) => {
-                            const items = results.data.slice(1).map(row => ({
-                                description: row[0],
-                                quantity: parseInt(row[1]) || 0,
-                                price: parseFloat(row[2]) || 0
-                            })).filter(item => item.description);
-    
-                            setFormState(prev => ({
-                                ...prev,
-                                invoice: { ...prev.invoice, items: [...prev.invoice.items, ...items] }
-                            }));
-                            toast.success("Items imported successfully!");
-                        }
-                    });
-                } else {
-                    const data = new Uint8Array(event.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                    const items = XLSX.utils.sheet_to_json(firstSheet).map(row => ({
-                        description: row.Description,
-                        quantity: parseInt(row.Quantity) || 0,
-                        price: parseFloat(row.Price) || 0
-                    }));
-    
-                    setFormState(prev => ({
-                        ...prev,
-                        invoice: { ...prev.invoice, items: [...prev.invoice.items, ...items] }
-                    }));
-                    toast.success("Items imported successfully!");
-                }
-            };
-            reader.readAsText(file);
+   // File Upload & Import Handler
+  const handleFileUploadAndImport = (e) => {
+    const file = e.target.files ? e.target.files[0] : e; // Handle both input and drag-drop
+    if (!file) return;
+
+    const fileExt = file.name.split(".").pop().toLowerCase();
+
+    if (["csv", "xlsx", "xls"].includes(fileExt)) {
+      // Handle CSV/Excel Import
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (fileExt === "csv") {
+          Papa.parse(event.target.result, {
+            complete: (results) => {
+              const items = results.data
+                .slice(1)
+                .map((row) => ({
+                  description: row[0],
+                  quantity: parseInt(row[1]) || 0,
+                  price: parseFloat(row[2]) || 0,
+                }))
+                .filter((item) => item.description);
+
+              setFormState((prev) => ({
+                ...prev,
+                invoice: { ...prev.invoice, items: [...prev.invoice.items, ...items] },
+              }));
+              toast.success("Items imported successfully!");
+            },
+          });
         } else {
-            // Handle File Upload (PDF, JPG, PNG)
-            if (file.size > 5000000) {
-                toast.error("File size should not exceed 5MB");
-                return;
-            }
-            const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
-            if (!allowedTypes.includes(file.type)) {
-                toast.error("Only PDF, JPEG, and PNG files are allowed");
-                return;
-            }
-    
-            setFile(file);
-            toast.success("File selected successfully!");
+          const data = new Uint8Array(event.target.result);
+          const workbook = XLSX.read(data, { type: "array" });
+          const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+          const items = XLSX.utils.sheet_to_json(firstSheet).map((row) => ({
+            description: row.Description,
+            quantity: parseInt(row.Quantity) || 0,
+            price: parseFloat(row.Price) || 0,
+          }));
+
+          setFormState((prev) => ({
+            ...prev,
+            invoice: { ...prev.invoice, items: [...prev.invoice.items, ...items] },
+          }));
+          toast.success("Items imported successfully!");
         }
-    };
+      };
+      if (fileExt === "csv") {
+        reader.readAsText(file);
+      } else {
+        reader.readAsArrayBuffer(file);
+      }
+    } else {
+      // Handle PDF/JPG/PNG Upload to Firebase Storage
+      if (file.size > 5000000) {
+        toast.error("File size should not exceed 5MB");
+        return;
+      }
+      const allowedTypes = ["application/pdf", "image/jpeg", "image/png"];
+      if (!allowedTypes.includes(file.type)) {
+        toast.error("Only PDF, JPEG, and PNG files are allowed");
+        return;
+      }
+
+      setFile(file);
+      toast.success("File selected successfully!");
+    }
+  };
 
     const addItem = () => {
         setFormState((prev) => ({
@@ -244,22 +256,49 @@ const InvoiceForm = ({ formState, setFormState, onSave }) => {
         }
     };
 
-    const handleDragOver = (e) => {
-        e.preventDefault();
-        e.target.classList.add('drag-over');
-    };
+      // Upload File to Firebase
+  const handleUpload = async () => {
+    if (!file) {
+      toast.error("No file selected for upload.");
+      return;
+    }
 
-    const handleDragLeave = (e) => {
-        e.preventDefault();
-        e.target.classList.remove('drag-over');
-    };
+    setIsLoading(true);
+    try {
+      const safeFileName = `${formState.invoice.invoiceNumber}_${Date.now()}_${file.name}`
+        .replace(/[^a-zA-Z0-9.-]/g, "_");
+      const fileURL = await uploadFileToFirebaseStorage(file, `invoices/${safeFileName}`);
 
-    const handleDrop = (e) => {
-        e.preventDefault();
-        e.target.classList.remove('drag-over');
-        const droppedFile = e.dataTransfer.files[0];
-        handleFileUploadAndImport(droppedFile);
-    };
+      setFormState((prev) => ({
+        ...prev,
+        invoice: { ...prev.invoice, fileURL },
+      }));
+      toast.success("File uploaded successfully!");
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      toast.error("Failed to upload file.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Drag & Drop Handlers
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.target.classList.add("drag-over");
+  };
+  
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.target.classList.remove("drag-over");
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.target.classList.remove("drag-over");
+    const droppedFile = e.dataTransfer.files[0];
+    handleFileUploadAndImport(droppedFile);
+  };
 
 
     const validateForm = async () => {
@@ -522,22 +561,7 @@ const InvoiceForm = ({ formState, setFormState, onSave }) => {
                 {errors.taxRate && <span className="error-message">{errors.taxRate}</span>}
             </div>
 
-            {/* File Upload */}
-            <h4>Upload Invoice File</h4>
-            <div
-                className="file-drop-zone"
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-            >
-                <input 
-                    type="file" 
-                    onChange={handleFileUploadAndImport} 
-                    className="file-upload"
-                    accept=".pdf,.jpg,.jpeg,.png"
-                />
-                <p>Drag and drop files here or click to select</p>
-            </div>
+        
             {errors.fileURL && <span className="error-message">{errors.fileURL}</span>}
 
             {/* Totals Display */}
@@ -561,6 +585,40 @@ const InvoiceForm = ({ formState, setFormState, onSave }) => {
                     }
                 />
             </div>
+            {/* File Upload Section */}
+<h4>Upload Invoice File</h4>
+<div 
+    className="file-drop-zone" 
+    onDragOver={handleDragOver} 
+    onDragLeave={handleDragLeave} 
+    onDrop={handleDrop}
+>
+    <input 
+        type="file" 
+        onChange={handleFileUploadAndImport} 
+        className="file-upload"
+        accept=".pdf,.jpg,.jpeg,.png,.csv,.xlsx,.xls"
+    />
+    <p>Drag and drop files here or click to select</p>
+</div>
+
+{/* Show Upload Button if a valid file is selected */}
+{file && (
+    <button onClick={handleUpload} disabled={isLoading}>
+        {isLoading ? "Uploading..." : "Upload File"}
+    </button>
+)}
+
+{/* Show uploaded file URL */}
+{formState.invoice.fileURL && (
+    <p>
+        File uploaded: 
+        <a href={formState.invoice.fileURL} target="_blank" rel="noopener noreferrer"> View File</a>
+    </p>
+)}
+
+{/* Show error messages */}
+{errors.fileURL && <span className="error-message">{errors.fileURL}</span>}
 
             {/* Action Buttons */}
             <div className="form-actions">
